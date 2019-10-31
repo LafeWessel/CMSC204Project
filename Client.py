@@ -2,37 +2,37 @@
 """
 Spyder Editor
 
-This is a temporary script file.
+This file contains the code for the Tic Tac Toe UI and how it interacts with the server
 """
 
 #Imports and initialization of tkinter object
 from tkinter import *
-import tkinter.messagebox
-tk = Tk()
-tk.title("Tic Tac Toe")
 
-class Application(tk.frame):
-    
-    button1,button2,button3,button4,button5,button6,button7,button8,button9
+class Window(Frame):
     
     def __init__(self, master=None):
-        super().__init__(master)
+        Frame.__init__(self,master)
         self.master = master
-        self.pack()
-        self.createButtons()
+        self.initWindow()
     
     #creates and lays out buttons
-    def createButtons(self):
-        button1 = Button(tk, text=" ", font='Times 20 bold', bg='gray', fg='white', height=4, width=8, command=lambda: btnClick(button1))
-        button2 = Button(tk, text=" ", font='Times 20 bold', bg='gray', fg='white', height=4, width=8, command=lambda: btnClick(button2))
-        button3 = Button(tk, text=" ", font='Times 20 bold', bg='gray', fg='white', height=4, width=8, command=lambda: btnClick(button3))
-        button4 = Button(tk, text=" ", font='Times 20 bold', bg='gray', fg='white', height=4, width=8, command=lambda: btnClick(button4))
-        button5 = Button(tk, text=" ", font='Times 20 bold', bg='gray', fg='white', height=4, width=8, command=lambda: btnClick(button5))
-        button6 = Button(tk, text=" ", font='Times 20 bold', bg='gray', fg='white', height=4, width=8, command=lambda: btnClick(button6))
-        button7 = Button(tk, text=" ", font='Times 20 bold', bg='gray', fg='white', height=4, width=8, command=lambda: btnClick(button7))
-        button8 = Button(tk, text=" ", font='Times 20 bold', bg='gray', fg='white', height=4, width=8, command=lambda: btnClick(button8))
-        button9 = Button(tk, text=" ", font='Times 20 bold', bg='gray', fg='white', height=4, width=8, command=lambda: btnClick(button9))
- #       buttonQuit = Button(tk, text="Quit", font='Times 10 bold', bg='gray', fg='white', height=0, width=4, command=self.master.destroy))
+    def initWindow(self):
+        
+        self.master.title("Tic Tac Toe")
+#        self.pack(fill=BOTH,expand =1)
+        self.pack()
+        
+        button1 = Button(self, text=" ", height=4, width=8, command=lambda: btnClick(button1))
+        button2 = Button(self, text=" ", height=4, width=8, command=lambda: btnClick(button2))
+        button3 = Button(self, text=" ", height=4, width=8, command=lambda: btnClick(button3))
+        button4 = Button(self, text=" ", height=4, width=8, command=lambda: btnClick(button4))
+        button5 = Button(self, text=" ", height=4, width=8, command=lambda: btnClick(button5))        
+        button6 = Button(self, text=" ", height=4, width=8, command=lambda: btnClick(button6))
+        button7 = Button(self, text=" ", height=4, width=8, command=lambda: btnClick(button7))
+        button8 = Button(self, text=" ", height=4, width=8, command=lambda: btnClick(button8))
+        button9 = Button(self, text=" ", height=4, width=8, command=lambda: btnClick(button9))
+        buttonQuit = Button(self, text="Quit",command=self.master.destroy)
+        buttonRestart = Button(self, text = "restart",command=lambda: restart())
         
         button1.grid(row=3,column=0)
         button2.grid(row=3,column=1)
@@ -44,7 +44,14 @@ class Application(tk.frame):
         button8.grid(row=5,column=1)
         button9.grid(row=5,column=2)
         buttonQuit.grid(row=0,column=0)
+        buttonRestart.grid(row=0, column=2)
     
+    
+    def restart():
+        print("restart clicked")
+    
+    def btnClick(Button):
+        print("button has been clicked")
         
     #Sends choice back to server
     def submitChoice(choiceLocation):
@@ -54,12 +61,11 @@ class Application(tk.frame):
     def disableButtons():
         print("Buttons disabled")
         
-        
-    
-        
     #Enables buttons, for at start of match
     def enableButtons():
         print("Buttons enabled")
     
-
-tk.mainloop()
+root = Tk()
+root.geometry("500x500")
+app = Window(root)
+app.mainloop()
