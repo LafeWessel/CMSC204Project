@@ -69,6 +69,7 @@ class Window(tk.Frame):
         self.buttonValues[i] = "x"
         
         self.updateBoard()
+        self.submitChoice()
         
             
     #Erases local board and tells server to delete memory and begin a new instance of the game
