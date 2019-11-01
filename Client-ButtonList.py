@@ -45,30 +45,30 @@ class Window(tk.Frame):
         tk.Frame.__init__(self,master)
         self.originalList = ["","","","","","","","",""]
         self.characterList = self.originalList
+        self.font = "helvetica 40 bold"
         self.master = master
-        self.initWindow()
         self.numberOfGames = 5
         self.playerWins = 0
         self.serverWins = 0
-        
+        self.initWindow()
     
     #creates and lays out buttons
     def initWindow(self):
         
         self.master.title("Tic Tac Toe")
         self.pack()
-        hght = 6
-        wdth = 12
+        hght = 1
+        wdth = 3
         
-        buttonList.append(tk.Button(self, text=self.characterList[0], height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[0])))
-        buttonList.append(tk.Button(self, text=self.characterList[1], height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[1])))
-        buttonList.append(tk.Button(self, text=self.characterList[2], height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[2])))
-        buttonList.append(tk.Button(self, text=self.characterList[3], height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[3])))
-        buttonList.append(tk.Button(self, text=self.characterList[4], height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[4])))
-        buttonList.append(tk.Button(self, text=self.characterList[5], height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[5])))
-        buttonList.append(tk.Button(self, text=self.characterList[6], height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[6])))
-        buttonList.append(tk.Button(self, text=self.characterList[7], height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[7])))
-        buttonList.append(tk.Button(self, text=self.characterList[8], height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[8])))
+        buttonList.append(tk.Button(self, text=self.characterList[0],font = self.font, height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[0])))
+        buttonList.append(tk.Button(self, text=self.characterList[1],font = self.font, height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[1])))
+        buttonList.append(tk.Button(self, text=self.characterList[2],font = self.font, height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[2])))
+        buttonList.append(tk.Button(self, text=self.characterList[3],font = self.font, height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[3])))
+        buttonList.append(tk.Button(self, text=self.characterList[4],font = self.font, height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[4])))
+        buttonList.append(tk.Button(self, text=self.characterList[5],font = self.font, height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[5])))
+        buttonList.append(tk.Button(self, text=self.characterList[6],font = self.font, height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[6])))
+        buttonList.append(tk.Button(self, text=self.characterList[7],font = self.font, height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[7])))
+        buttonList.append(tk.Button(self, text=self.characterList[8],font = self.font, height=hght, width=wdth, command=lambda: self.btnClicked(buttonList[8])))
 
         print(buttonList)
         buttonQuit = tk.Button(self, text="Quit",command=self.master.destroy)
@@ -85,14 +85,14 @@ class Window(tk.Frame):
         buttonList[8].grid(row=5,column=2)
         buttonQuit.grid(row=0,column=0)
         buttonRestart.grid(row=0, column=1)
-        
 
-    #should change the value of the empty button to be the player's and then tell the server what changed
+    #Changes value of the Button clicked, updates the characterList, locks button, then calls update function
     def btnClicked(self, button):
         print("btnClicked called")
         button['text'] = "x"
         self.updateCharListFromBoard()
-        self.lockFilledButton(button)
+        self.lockClickedButton(button)
+        self.updateBoard()
             
   
         
@@ -100,16 +100,32 @@ class Window(tk.Frame):
     def updateBoard(self):
         print("Board Updating")
         
-        #send character list with pickle
+        #Send characterList to server
         #data = pickle.dumps(self.characterList)
         #mySocket.send(data)
         
-        #Receive characterList
-        #characterList = pickle.loads(c.recv(4096))
+        #Receive characterList from server
+        #self.characterList = pickle.loads(c.recv(4096))
+        
+        
+        #Checks data received from server for any added win conditions
+        #Player won match
+        if self.characterList[-1] == 'w':
+            self.playerWins += 1
+            self.checkGame()
+            self.eraseBoard()
+        #Server won match
+        elif self.characterList[-1] == 'l':
+            self.serverWins += 1
+            self.checkGame()
+            self.eraseBoard()
+        #Match was a tie
+        elif self.characterList[-1] == 't':
+            self.eraseBoard()
         
         #updates board from character list
         self.updateBoardFromCharList()
-        
+        self.lockAllFilledButtons()
         
         
     #Erases local board and sets win counters to 0
@@ -130,8 +146,22 @@ class Window(tk.Frame):
         self.enableButtons()
         
         
-    #Disables a single button for when a choice has been made    
+    #Checks characterList array to see if any buttons need to be locked
+    def lockAllFilledButtons(self):
+        print("lockAllFilledButtons called")
+        index = 0
+        for button in buttonList:
+            self.lockFilledButton(buttonList[index])
+            index += 1
+        
+    #Locks a button if it has been filled
     def lockFilledButton(self, button):
+        print("lockFilledButton called")
+        if button['text'] != "":
+            button.config(state=tk.DISABLED)
+        
+    #Disables a single button for when a choice has been made    
+    def lockClickedButton(self, button):
         print("LockFilledButton called")
         button.config(state=tk.DISABLED)    
     
@@ -166,17 +196,6 @@ class Window(tk.Frame):
             print(self.characterList[index])
             index +=1      
     
-    
-    #For winning at the end of a match/game
-    def playerWin(self):
-        self.playerWins += 1
-        print("Player has won: ", self.playerWins)
-        self.eraseBoard()
-
-    def serverWin(self):
-        self.serverWins += 1
-        print("Server has won: ", self.serverWins)
-        self.eraseBoard()
         
     #Checks to see if anyone has won the entire game
     def checkGame(self):
@@ -195,6 +214,6 @@ class Window(tk.Frame):
 #global buttonValues = [" "," "," "," "," "," "," "," "," "]
 
 root = tk.Tk()
-root.geometry("400x350")
+root.geometry("360x370")
 app = Window(root)
 app.mainloop()
