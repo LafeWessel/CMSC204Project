@@ -26,7 +26,8 @@ This file contains the code for the Tic Tac Toe UI and how it interacts with the
 
 """TODO section
 
-    Add locking of buttons when filled
+    Write server-client data transaction code
+    Add popup for at end of match
     
 """
 
@@ -35,19 +36,21 @@ import tkinter as tk
 import pickle
 import socket
 
-buttonList = []
 
+buttonList = []
 
 class Window(tk.Frame):
     
     def __init__(self, master=None):
         tk.Frame.__init__(self,master)
-        self.characterList = ["","","","","","","","",""]
+        self.originalList = ["","","","","","","","",""]
+        self.characterList = self.originalList
         self.master = master
         self.initWindow()
         self.numberOfGames = 5
         self.playerWins = 0
         self.serverWins = 0
+        
     
     #creates and lays out buttons
     def initWindow(self):
@@ -81,22 +84,21 @@ class Window(tk.Frame):
         buttonList[7].grid(row=5,column=1)
         buttonList[8].grid(row=5,column=2)
         buttonQuit.grid(row=0,column=0)
-        buttonRestart.grid(row=0, column=2)
+        buttonRestart.grid(row=0, column=1)
         
 
     #should change the value of the empty button to be the player's and then tell the server what changed
-    def btnClicked(self, i):
-        i['text'] = "x"
-        self.updateCharList()
+    def btnClicked(self, button):
+        print("btnClicked called")
+        button['text'] = "x"
+        self.updateCharListFromBoard()
+        self.lockFilledButton(button)
             
-    #Erases local board
-    def restart(self):
-        print("restart clicked")
-        self.eraseBoard()   
+  
         
     #TODO sends and receives data to and from server
     def updateBoard(self):
-        
+        print("Board Updating")
         
         #send character list with pickle
         #data = pickle.dumps(self.characterList)
@@ -107,19 +109,31 @@ class Window(tk.Frame):
         
         #updates board from character list
         self.updateBoardFromCharList()
-        print("Board Updating")
         
         
         
-    #Should set all board values back to " "     
+    #Erases local board and sets win counters to 0
+    def restart(self):
+        print("restart clicked")
+        self.playerWins = 0
+        print(self.playerWins)
+        self.serverWins = 0
+        print(self.serverWins)
+        self.eraseBoard()         
+        
+    #Should set all board values back to ""     
     def eraseBoard(self):
         print("Erasing board")
         for i in buttonList:
             i['text'] = ""
-        self.characterList = []
-        self.updateCharList()
+        self.characterList = self.originalList
         self.enableButtons()
         
+        
+    #Disables a single button for when a choice has been made    
+    def lockFilledButton(self, button):
+        print("LockFilledButton called")
+        button.config(state=tk.DISABLED)    
     
     #Disables buttons, for at end of match
     def disableButtons(self):
@@ -132,23 +146,28 @@ class Window(tk.Frame):
         print("Buttons enabled")
         for button in buttonList:
             button.config(state=tk.NORMAL)
+         
             
-    #updates character list that gets sent to the server
-    def updateCharList(self):
+    #updates character list from board values that gets sent to the server
+    def updateCharListFromBoard(self):
+        print("updateCharFromBoard called")
         index = 0
         for i in buttonList:
             self.characterList[index] = i['text']
             print(self.characterList[index])
             index +=1
             
-    #updates buttons from character list received from server
+    #updates board buttons from character list received from server
     def updateBoardFromCharList(self):
+        print("updateBoadFromCharList called")
         index = 0
         for i in self.characterList:
             buttonList[index]['text'] = i
             print(self.characterList[index])
-            index +=1       
+            index +=1      
     
+    
+    #For winning at the end of a match/game
     def playerWin(self):
         self.playerWins += 1
         print("Player has won: ", self.playerWins)
