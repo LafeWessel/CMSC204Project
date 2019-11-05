@@ -39,7 +39,7 @@ def didTie(board):
     return True
 
 s = socket.socket()
-host = "10.0.28.109"
+host = "127.0.0.1"
 print("Host is: " + host)
 port = 12345
 s.bind((host, port))
