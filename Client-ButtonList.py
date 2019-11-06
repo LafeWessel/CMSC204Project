@@ -27,12 +27,12 @@ This file contains the code for the Tic Tac Toe UI and how it interacts with the
 """TODO section
 
     Write server-client data transaction code
-    Add popup for at end of match
     
 """
 
 #Imports and initialization of tkinter object
 import tkinter as tk
+from tkinter import ttk
 import pickle
 import socket
 
@@ -76,6 +76,7 @@ class Window(tk.Frame):
         buttonRestart = tk.Button(self, text = "Restart",command=lambda: self.restart())
         winsLossesText =tk.Text(self, height = 5, width = 10)
         winsLossesText.insert(tk.END,self.WLText)
+        winsLossesText.config(state=tk.DISABLED)
         
         buttonList[0].grid(row=3,column=0)
         buttonList[1].grid(row=3,column=1)
@@ -120,17 +121,19 @@ class Window(tk.Frame):
         if self.characterList[-1] == 'w':
             self.playerWins += 1
             self.WLText = "W:"+str(self.playerWins)+" L:"+str(self.serverWins)
+            self.popUpMsg("You have won the match")
             self.checkGame()
             self.eraseBoard()
         #Server won match
         elif self.characterList[-1] == 'l':
             self.serverWins += 1
             self.WLText = "W:"+str(self.playerWins)+" L:"+str(self.serverWins)
+            self.popUpMsg("The computer has won the match")
             self.checkGame()
             self.eraseBoard()
         #Match was a tie
         elif self.characterList[-1] == 't':
-            self.tiePopUp()
+            self.popUpMsg("The match was a tie")
             self.eraseBoard()
         
 
@@ -209,27 +212,28 @@ class Window(tk.Frame):
     #Checks to see if anyone has won the entire game
     def checkGame(self):
         if self.serverWins >= 3:
-            self.endPopUp("You")
+            self.popUpMsg("You have won the game!")
             
         elif self.playerWins >= 3:
-            self.endPopUp("The Computer")
-            
-    
-    def endPopUp(self, name):
-        print("%s has won!", name)
-        
-    def tiePopUp(self):
-        print("It was a tie!")
+            self.popUpMsg("The computer has won the game!")
+
+    def popUpMsg(self, message):
+        popup = tk.Tk()
+        popup.wm_title("Win")
+        label = ttk.Label(popup, text=message)
+        label.pack(side="top", fill="x", pady=10)
+        ackButton = ttk.Button(popup, text="Okay", command = popup.destroy)
+        ackButton.pack()
+        popup.mainloop()
 
 
-'''
-host = '127.0.0.1'
-port = 12345
-mySocket = socket.socket()
-mySocket.connect((host.port))
-'''
+#host = '127.0.0.1'
+#port = 12345
+#mySocket = socket.socket()
+#mySocket.connect((host.port))
+
 root = tk.Tk()
-root.geometry("360x370")
+root.geometry("360x430")
 app = Window(root)
 app.mainloop()
 #mySocket.close
