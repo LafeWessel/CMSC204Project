@@ -7,13 +7,26 @@ import pickle
 import random
 import sys
 
-s = socket.socket()
-host = "10.194.7.55"
-print("Host is: " + host)
-port = 12345
-s.bind((host, port))
-s.listen(5)
+
+
+mySocket = socket.socket()
+def getSocketPort():
+    try:
+        #asks for host IP address and port number
+        host = input("Enter host IPv4 address:")
+        port =  int(input("Enter port number:"))
         
+        #host = '10.0.27.104'
+        #port = 12345
+        
+        mySocket.connect((host, port))
+        mySocket.bind((host, port))
+        mySocket.listen(5)
+    
+    except:
+        print("Improper socket or port")
+        getSocketPort()
+    
 
 try:
     def didWin(player, board):
@@ -48,7 +61,7 @@ try:
     
     receivedList = ["","","","","","","","",""]
     while True:
-        c, addr = s.accept()
+        c, addr = mySocket.accept()
         print ('Got connection from', addr)
         while True:
             

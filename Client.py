@@ -11,11 +11,22 @@ import pickle
 import socket
 import sys
 
-host = '10.194.7.55'
-port = 12345
-mySocket = socket.socket()
-mySocket.connect((host, port))
-c, addr = ('10.194.7.55', 12345)
+
+def getSocketPort():
+    try:
+        #asks for host IP address and port number
+        host = input("Enter host IPv4 address:")
+        port =  int(input("Enter port number:"))
+        
+        #host = '10.0.27.104'
+        #port = 12345
+        mySocket = socket.socket()
+        mySocket.connect((host, port))
+    
+    except:
+        print("Improper socket or port")
+        getSocketPort()
+
 """
 message = input(" ? ")
 while message != 'q':
@@ -222,7 +233,6 @@ try:
             label.pack(side="top", fill="x", pady=10)
             ackButton = ttk.Button(popup, text="Okay", command = popup.destroy)
             ackButton.pack()
-            #popup.mainloop()
             
         def quitGame(self):
             stop = ["q"]
