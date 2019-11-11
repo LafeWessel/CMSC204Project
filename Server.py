@@ -6,27 +6,19 @@ import socket
 import pickle
 import random
 import sys
-
-
-
+        
 mySocket = socket.socket()
-def getSocketPort():
-    try:
-        #asks for host IP address and port number
-        host = input("Enter host IPv4 address:")
-        port =  int(input("Enter port number:"))
-        
-        #host = '10.0.27.104'
-        #port = 12345
-        
-        mySocket.connect((host, port))
-        mySocket.bind((host, port))
-        mySocket.listen(5)
-    
-    except:
-        print("Improper socket or port")
-        getSocketPort()
-    
+
+hostName = socket.gethostname()
+hostAddr = socket.gethostbyname(hostName)
+print(hostName)
+print(hostAddr)
+
+port = 12345
+mySocket.connect((hostAddr, port))
+mySocket.bind((hostAddr, port))
+mySocket.listen(5)
+
 
 try:
     def didWin(player, board):
@@ -66,7 +58,7 @@ try:
         while True:
             
             receivedList = pickle.loads(c.recv(8192))
-           # print("They sent us: \"" + receivedList + "\"")
+            #print("They sent us: \"" + receivedList + "\"")
             #ASSUMING THAT EMPTY BUTTONS HAVE EMPTY STRINGS, NOT SPACES
             print("received something", receivedList)
             

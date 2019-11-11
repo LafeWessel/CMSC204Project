@@ -11,6 +11,7 @@ import pickle
 import socket
 import sys
 
+mySocket = socket.socket()
 
 def getSocketPort():
     try:
@@ -20,21 +21,21 @@ def getSocketPort():
         
         #host = '10.0.27.104'
         #port = 12345
-        mySocket = socket.socket()
+        
+        print(host)
+        print(port)
+        print((host,port))
+        
         mySocket.connect((host, port))
+        mySocket.bind((host, port))
+        mySocket.listen(5)
     
     except:
         print("Improper socket or port")
         getSocketPort()
 
-"""
-message = input(" ? ")
-while message != 'q':
-	mySocket.send (message.encode())
-	data = mySocket.recv(1024).decode()
-	print('Received from server: ' + data)
-	message = input(" ? ")
-"""
+
+getSocketPort()
 buttonList = []
 
 try:
@@ -127,13 +128,14 @@ try:
                 self.eraseBoard()
             #Server won match
             elif self.characterList[-1] == 'l':
-                
                 self.serverWins += 1
                 WLText = "W:"+str(self.playerWins)+" L:"+str(self.serverWins)
                 self.winsLossesText.configure(text = WLText)
                 self.popUpMsg("The computer has won the match")
                 self.checkGame()
                 self.eraseBoard()
+                #Updates board again, which essentially tells the server to go
+                self.updateBoard()
             #Match was a tie
             elif self.characterList[-1] == 't':
                 self.popUpMsg("The match was a tie")
@@ -226,6 +228,7 @@ try:
             elif self.playerWins >= 3:
                 self.popUpMsg("The computer has won the game!")
     
+        #Creates a Popup box with the message that was passed in
         def popUpMsg(self, message):
             popup = tk.Tk()
             popup.wm_title("Win")
@@ -234,6 +237,7 @@ try:
             ackButton = ttk.Button(popup, text="Okay", command = popup.destroy)
             ackButton.pack()
             
+        #Tells server that the game is over and stops local operations
         def quitGame(self):
             stop = ["q"]
             mySocket.send(pickle.dumps(stop))
