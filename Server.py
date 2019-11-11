@@ -11,11 +11,10 @@ mySocket = socket.socket()
 
 hostName = socket.gethostname()
 hostAddr = socket.gethostbyname(hostName)
-print(hostName)
-print(hostAddr)
+#print(hostName)
+#print(hostAddr)
 
 port = 12345
-mySocket.connect((hostAddr, port))
 mySocket.bind((hostAddr, port))
 mySocket.listen(5)
 
@@ -54,16 +53,16 @@ try:
     receivedList = ["","","","","","","","",""]
     while True:
         c, addr = mySocket.accept()
-        print ('Got connection from', addr)
+#        print ('Got connection from', addr)
         while True:
             
             receivedList = pickle.loads(c.recv(8192))
             #print("They sent us: \"" + receivedList + "\"")
             #ASSUMING THAT EMPTY BUTTONS HAVE EMPTY STRINGS, NOT SPACES
-            print("received something", receivedList)
+#            print("received something", receivedList)
             
             if (receivedList[0] == "q"):
-                print("Client ended game")
+#                print("Client ended game")
                 sys.exit()
             
             #if client wins, append w
@@ -77,12 +76,12 @@ try:
             
             elif receivedList[-1] != "w":
                 while True:    
-                    print("In while loop")
+#                    print("In while loop")
                     decision = random.randint(0,8)
-                    print("decision = ", decision)
+#                    print("decision = ", decision)
                     if receivedList[decision] == "":
                         receivedList[decision] = "o"
-                        print("receivedList[decision] = ", receivedList[decision])
+#                        print("receivedList[decision] = ", receivedList[decision])
                         break;
                 
             #if server wins, append l
@@ -93,10 +92,10 @@ try:
             if didTie(receivedList) and receivedList[-1] != "w" and receivedList[-1] != "t" and receivedList[-1] != "l":
                 receivedList.append("t")
                 
-            print("sending", receivedList)
+#            print("sending", receivedList)
             stuffToSend = pickle.dumps(receivedList)
             c.send (stuffToSend)
-            print("Packet sent")
+#            print("Packet sent")
 except EOFError:
     print("A fatal error occured (EOFError)")
     sys.exit()

@@ -19,20 +19,15 @@ def getSocketPort():
         host = input("Enter host IPv4 address:")
         port =  int(input("Enter port number:"))
         
-        #host = '10.0.27.104'
-        #port = 12345
-        
-        print(host)
-        print(port)
-        print((host,port))
+#        print(host)
+#        print(port)
+#        print((host,port))
         
         mySocket.connect((host, port))
-        mySocket.bind((host, port))
-        mySocket.listen(5)
-    
-    except:
-        print("Improper socket or port")
-        getSocketPort()
+
+    except TimeoutError:
+       print("Improper socket or port")
+       getSocketPort()
 
 
 getSocketPort()
@@ -93,7 +88,7 @@ try:
     
         #Changes value of the Button clicked, updates the characterList, locks button, then calls update function
         def btnClicked(self, button):
-            print("btnClicked called")
+#            print("btnClicked called")
             button['text'] = "x"
             self.updateCharListFromBoard()
             self.lockClickedButton(button)
@@ -101,7 +96,7 @@ try:
                 
         
         def updateBoard(self):
-            print("Board Updating")
+#            print("Board Updating")
             
     #        #Send characterList to server
             data = pickle.dumps(self.characterList)
@@ -110,9 +105,9 @@ try:
     #        #Receive characterList from server
             #self.characterList = pickle.loads(b"".join(data))
             self.characterList = pickle.loads(mySocket.recv(4024))
-            print("characterList = ", self.characterList)
+#            print("characterList = ", self.characterList)
     
-            print("past loading in pickle data")
+#            print("past loading in pickle data")
             #updates board from character list
             self.updateBoardFromCharList()
             self.lockAllFilledButtons()   
@@ -146,18 +141,18 @@ try:
             
         #Erases local board and sets win counters to 0
         def restart(self):
-            print("restart clicked")
+#            print("restart clicked")
             self.playerWins = 0
-            print(self.playerWins)
+#            print(self.playerWins)
             self.serverWins = 0
-            print(self.serverWins)
+#            print(self.serverWins)
             WLText = "W:"+str(self.playerWins)+" L:"+str(self.serverWins)
             self.winsLossesText.configure(text = WLText)
             self.eraseBoard()         
             
         #Should set all board values back to ""     
         def eraseBoard(self):
-            print("Erasing board")
+#            print("Erasing board")
             for i in buttonList:
                 i['text'] = ""
             self.characterList = self.originalList
@@ -166,7 +161,7 @@ try:
             
         #Checks characterList array to see if any buttons need to be locked
         def lockAllFilledButtons(self):
-            print("lockAllFilledButtons called")
+#            print("lockAllFilledButtons called")
             index = 0
             for button in buttonList:
                 self.lockFilledButton(buttonList[index])
@@ -174,47 +169,47 @@ try:
             
         #Locks a button if it has been filled
         def lockFilledButton(self, button):
-            print("lockFilledButton called")
+#            print("lockFilledButton called")
             if button['text'] != "":
                 button.config(state=tk.DISABLED)
             
         #Disables a single button for when a choice has been made    
         def lockClickedButton(self, button):
-            print("LockFilledButton called")
+#            print("LockFilledButton called")
             button.config(state=tk.DISABLED)    
         
         #Disables buttons, for at end of match
         def disableButtons(self):
-            print("Buttons disabled")
+#            print("Buttons disabled")
             for button in buttonList:
                 button.config(state=tk.DISABLED)
             
         #Enables buttons, for at start of match
         def enableButtons(self):
-            print("Buttons enabled")
+#            print("Buttons enabled")
             for button in buttonList:
                 button.config(state=tk.NORMAL)
              
                 
         #updates character list from board values that gets sent to the server
         def updateCharListFromBoard(self):
-            print("updateCharFromBoard called")
+#            print("updateCharFromBoard called")
             index = 0
             for i in buttonList:
                 self.characterList[index] = i['text']
-                print("characterList[index] = ",self.characterList[index])
-                print("index = ", index)
-                print("characterList = ", self.characterList)
+#                print("characterList[index] = ",self.characterList[index])
+#                print("index = ", index)
+#                print("characterList = ", self.characterList)
                 index +=1
                 
         #updates board buttons from character list received from server
         def updateBoardFromCharList(self):
-            print("updateBoadFromCharList called")
+#            print("updateBoadFromCharList called")
             index = 0
             for i in self.characterList:
                 buttonList[index]['text'] = i
-                print(self.characterList[index]," ...")
-                print("index = ",index)
+#                print(self.characterList[index]," ...")
+#                print("index = ",index)
                 index +=1
                 if index == 9:
                     break;
@@ -243,11 +238,6 @@ try:
             mySocket.send(pickle.dumps(stop))
             root.destroy()
             sys.exit()
-    
-    #host = '127.0.0.1'
-    #port = 12345
-    #mySocket = socket.socket()
-    #mySocket.connect((host.port))
     
     root = tk.Tk()
     root.geometry("360x430")
