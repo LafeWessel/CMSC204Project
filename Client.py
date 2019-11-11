@@ -38,7 +38,7 @@ try:
         
         def __init__(self, master=None):
             tk.Frame.__init__(self,master)
-            self.originalList = ["","","","","","","","",""]
+            self.originalList = ["","","","","","","","","",""]
             self.characterList = self.originalList
             self.font = "helvetica 40 bold"
             self.master = master
@@ -129,8 +129,9 @@ try:
                 self.popUpMsg("The computer has won the match")
                 self.checkGame()
                 self.eraseBoard()
-                #Updates board again, which essentially tells the server to go
-                self.updateBoard()
+#                #Updates board again, which essentially tells the server to go
+#                self.updateBoard()
+                #print(self.characterList)
             #Match was a tie
             elif self.characterList[-1] == 't':
                 self.popUpMsg("The match was a tie")
