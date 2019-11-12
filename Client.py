@@ -17,7 +17,7 @@ def getSocketPort():
     try:
         #asks for host IP address and port number
         host = input("Enter server IPv4 address:")
-        port =  int(input("Enter port number:"))
+        port =  12345
         
 #        print(host)
 #        print(port)
